@@ -1,8 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Bank App";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+
+
+        <table class="table">            
+            <tbody>
+                <tr>
+                    <td>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Index">
+                            <img src="~/images/accounts.jpg"  width="150"/>
+                            <br>
+                            Accounts
+                        </a>
+                    </td>                    
+                </tr>
+                <tr>
+                    <td>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Create">
+                            <img src="~/images/transfer.jpg" width="150" />
+                            <br>
+                            Initiate a Transfer
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">
+                            <img src="~/images/transactions.jpg" width="150" />
+                            <br>
+                            View All Transactions
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

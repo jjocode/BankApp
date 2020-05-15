@@ -1,0 +1,58 @@
+﻿@model BankApp.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Transfer Funds</h1>
+
+<h4>Transaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FromAccount" class="control-label"></label>                
+                <select asp-for="FromAccount" class="form-control" asp-items="ViewBag.FromAccount">
+                    <option value="">-- Select From Account --</option>
+                </select>
+                <span asp-validation-for="FromAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToAccount" class="control-label"></label>
+                <select asp-for="ToAccount" class="form-control" asp-items="ViewBag.ToAccount">
+                    <option value="">-- Select To Account --</option>
+                </select>
+                <span asp-validation-for="ToAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransactionAmount" class="control-label"></label>
+                <input asp-for="TransactionAmount" class="form-control" />
+                <span asp-validation-for="TransactionAmount" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="FromBalance" class="control-label"></label>
+                <input asp-for="FromBalance" class="form-control" />
+                <span asp-validation-for="FromBalance" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToBalance" class="control-label"></label>
+                <input asp-for="ToBalance" class="form-control" />
+                <span asp-validation-for="ToBalance" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

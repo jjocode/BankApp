@@ -1,0 +1,64 @@
+﻿@model IEnumerable<BankApp.Models.Transaction>
+
+@{
+    ViewData["Title"] = "All Transactions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>All Transactions</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FromAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FromBalance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToBalance)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FromAccount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ToAccount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FromBalance)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ToBalance)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
