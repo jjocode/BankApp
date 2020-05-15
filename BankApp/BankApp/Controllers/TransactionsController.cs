@@ -59,25 +59,51 @@ namespace BankApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FromAccount,ToAccount,TransactionDate,TransactionAmount,FromBalance,ToBalance")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("Id,FromAccountId, FromName, ToAccountId, ToName,TransactionDate,TransactionAmount,FromBalance,ToBalance")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                var fromAcct = GetAccount(transaction.FromAccount);                
-                if (fromAcct.Balance < transaction.TransactionAmount)
+                try
                 {
-                    return RedirectToAction(nameof(Create));
+                    var transferAmount = transaction.TransactionAmount;
+                    var fromAcct = GetAccount(transaction.FromAccountId);                
+                    if (fromAcct.Balance < transferAmount)
+                    {
+                        TempData["ErrorMessage"] = "Transfer amount cannot be greater than available balance.  Please select a different amount.";
+                        return RedirectToAction(nameof(Create));
+                    }                    
+
+                    var toAcct = GetAccount(transaction.ToAccountId);
+                    if (fromAcct.Id == toAcct.Id)
+                    {
+                        TempData["ErrorMessage"] = "You cannot transfer to the same account.  Please choose another account";
+                        return RedirectToAction(nameof(Create));
+                    }
+
+                    transaction.FromName = fromAcct.Name;
+                    transaction.ToName = toAcct.Name;
+                    transaction.TransactionDate = DateTime.Now;
+                    transaction.FromBalance = fromAcct.Balance;
+                    transaction.ToBalance = toAcct.Balance;
+
+                    //do balance transfer                
+                        if (fromAcct.Balance < transferAmount)
+                            throw new ArgumentOutOfRangeException();
+
+                        fromAcct.Balance -= transferAmount;
+                        toAcct.Balance += transferAmount;
+
+                    //save transaction
+                    _context.UpdateRange(fromAcct, toAcct);
+                    _context.AddRange(transaction);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
-
-                var toAcct = GetAccount(transaction.ToAccount);
-
-                transaction.TransactionDate = DateTime.Now;
-                transaction.FromBalance = fromAcct.Balance;
-                transaction.ToBalance = toAcct.Balance;
-
-                _context.Add(transaction);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Occurred: {0} ", ex);
+                }
             }
             return View(transaction);
         }
@@ -173,6 +199,25 @@ namespace BankApp.Controllers
                                 select a;
             ViewBag.FromAccount = new SelectList(accountsQuery.AsNoTracking(), "Id", "Name", selectedAccount);
             ViewBag.ToAccount = new SelectList(accountsQuery.AsNoTracking(), "Id", "Name", selectedAccount);
+        }
+
+        private void TransferBalance(Account fromAccount, Account toAccount, decimal amount)
+        {
+            try
+            {
+                if (fromAccount.Balance < amount)
+                    throw new ArgumentOutOfRangeException();
+
+                fromAccount.Balance -= amount;
+                toAccount.Balance += amount;
+
+                _context.AddRange(fromAccount, toAccount);
+                _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error Occurred: {0} ", ex);
+            }            
         }
 
         private Account GetAccount(int id)
