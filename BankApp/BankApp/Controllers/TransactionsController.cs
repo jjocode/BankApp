@@ -59,7 +59,7 @@ namespace BankApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FromAccountId, FromName, ToAccountId, ToName,TransactionDate,TransactionAmount,FromBalance,ToBalance")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("Id,FromAccountId, FromAccount, ToAccountId, ToAccount,TransactionDate,TransactionAmount,FromBalance,ToBalance")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
@@ -80,8 +80,8 @@ namespace BankApp.Controllers
                         return RedirectToAction(nameof(Create));
                     }
 
-                    transaction.FromName = fromAcct.Name;
-                    transaction.ToName = toAcct.Name;
+                    transaction.FromAccount = fromAcct.Name;
+                    transaction.ToAccount = toAcct.Name;
                     transaction.TransactionDate = DateTime.Now;
                     transaction.FromBalance = fromAcct.Balance;
                     transaction.ToBalance = toAcct.Balance;

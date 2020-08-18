@@ -7,22 +7,39 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankApp.Data;
 using BankApp.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BankApp.Controllers
 {
     public class AccountsController : Controller
     {
         private readonly BankAppContext _context;
+        private readonly ILogger<AccountsController> _logger;
 
-        public AccountsController(BankAppContext context)
+        public AccountsController(BankAppContext context, ILogger<AccountsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Accounts.OrderBy(a => a.Name).ToListAsync());
+            _logger.LogDebug($"Debug ");
+            _logger.LogError($"Error ");
+            _logger.LogCritical($"Critical ");
+
+            var v = new List<Account>();
+            try
+            {
+                v = await _context.Accounts.OrderBy(a => a.Name).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return View(v);
         }
 
         // GET: Accounts/Details/5
